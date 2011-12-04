@@ -81,7 +81,14 @@ public class ListFriendsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("image/png");
+
+        // get the output stream
         ServletOutputStream output = response.getOutputStream();
+
+        // create a new project on Gephi
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        projectController.newProject();
+
         try {
             // setup facebook client
             String accessToken = request.getParameter("access_token");
@@ -90,9 +97,7 @@ public class ListFriendsServlet extends HttpServlet {
             }
             FacebookClient client = new DefaultFacebookClient(ACCESS_TOKEN);
 
-            // setup Gephi
-            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-            projectController.newProject();
+            // get Gephi's workspace
             Workspace workspace = projectController.getCurrentWorkspace();
 
             // get models and controllers for the newly created workspace
@@ -181,6 +186,7 @@ public class ListFriendsServlet extends HttpServlet {
             exportController.exportStream(output, pngExporter);
         } finally {
             output.close();
+            projectController.closeCurrentProject();
         }
     }
 
