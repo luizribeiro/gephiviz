@@ -24,3 +24,12 @@ div#pan {
     border: 0;
     z-index: 10;
 }
+
+.gephi-badge img {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+	margin: 10px;
+    border: 0;
+    z-index: 10;
+}
