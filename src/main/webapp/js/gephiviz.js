@@ -8,4 +8,5 @@ $(document).ready(function() {
         'panRight'  :  $('#panright'),
         'fit'       :  $('#fit')
     });
+    $('#pan img').fit();
 });
