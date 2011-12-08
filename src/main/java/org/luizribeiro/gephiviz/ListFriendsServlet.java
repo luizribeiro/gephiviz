@@ -3,6 +3,7 @@ package org.luizribeiro.gephiviz;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.Facebook;
 import com.restfb.FacebookClient;
+import com.restfb.exception.FacebookOAuthException;
 import com.restfb.types.User;
 import java.io.IOException;
 import java.util.HashMap;
@@ -178,6 +179,9 @@ public class ListFriendsServlet extends HttpServlet {
             pngExporter.setWidth(2048);
             pngExporter.setHeight(2048);
             exportController.exportStream(output, pngExporter);
+        } catch (FacebookOAuthException ex) {
+            request.getSession().invalidate();
+            response.sendRedirect(request.getRequestURL().toString());
         } finally {
             output.close();
             projectController.closeCurrentProject();
