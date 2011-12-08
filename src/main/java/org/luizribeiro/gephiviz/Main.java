@@ -6,6 +6,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 public class Main {
 
     public static void main(String args[]) {
+        String webappDirLocation = "src/main/webapp/";
         String webPort = System.getenv("PORT");
         if (webPort == null || webPort.isEmpty()) {
             webPort = "8080";
@@ -14,7 +15,9 @@ public class Main {
         Server server = new Server(Integer.parseInt(webPort));
 
         WebAppContext webapp = new WebAppContext();
-        webapp.setWar("target/gephiviz.war");
+        webapp.setContextPath("/");
+        webapp.setDescriptor(webappDirLocation + "WEB-INF/web.xml");
+        webapp.setResourceBase(webappDirLocation);
         server.setHandler(webapp);
         try {
             server.start();
