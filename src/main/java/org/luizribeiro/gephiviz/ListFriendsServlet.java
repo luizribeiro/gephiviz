@@ -24,8 +24,6 @@ import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
-import org.gephi.layout.plugin.labelAdjust.LabelAdjust;
-import org.gephi.layout.plugin.labelAdjust.LabelAdjustBuilder;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.plugin.NodeColorTransformer;
@@ -41,6 +39,7 @@ import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.gephi.statistics.plugin.Modularity;
 import org.openide.util.Lookup;
+import org.scribe.model.Token;
 
 class Friend {
 
@@ -76,8 +75,6 @@ class MultiqueryResults {
 
 public class ListFriendsServlet extends HttpServlet {
 
-    private static final String ACCESS_TOKEN = "AAACEdEose0cBAF8bYkrspZAGEpHm3XQ3tuArTu6kLShhRTduOzpv6pXtyvGuZBK6K82wH5h9nWCeZBEvtOZB7zmNyOaZCQXZBrArmvEpakMAZDZD";
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("image/png");
@@ -91,11 +88,8 @@ public class ListFriendsServlet extends HttpServlet {
 
         try {
             // setup facebook client
-            String accessToken = request.getParameter("access_token");
-            if (accessToken == null) {
-                accessToken = ACCESS_TOKEN;
-            }
-            FacebookClient client = new DefaultFacebookClient(ACCESS_TOKEN);
+            String accessToken = ((Token) request.getSession().getAttribute(FacebookAuthFilter.FB_ACCESS_TOKEN)).getToken();
+            FacebookClient client = new DefaultFacebookClient(accessToken);
 
             // get Gephi's workspace
             Workspace workspace = projectController.getCurrentWorkspace();
