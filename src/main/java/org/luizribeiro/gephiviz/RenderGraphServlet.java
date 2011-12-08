@@ -74,7 +74,7 @@ class MultiqueryResults {
     List<Name> names;
 }
 
-public class ListFriendsServlet extends HttpServlet {
+public class RenderGraphServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

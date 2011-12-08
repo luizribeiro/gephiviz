@@ -18,11 +18,11 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <servlet>
-        <servlet-name>ListFriendsServlet</servlet-name>
-        <servlet-class>org.luizribeiro.gephiviz.ListFriendsServlet</servlet-class>
+        <servlet-name>RenderGraphServlet</servlet-name>
+        <servlet-class>org.luizribeiro.gephiviz.RenderGraphServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ListFriendsServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <servlet-name>RenderGraphServlet</servlet-name>
+        <url-pattern>/render</url-pattern>
     </servlet-mapping>
 </web-app>
