@@ -2,7 +2,6 @@ package org.luizribeiro.gephiviz;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.openide.util.Exceptions;
 
 public class Main {
 
@@ -21,7 +20,7 @@ public class Main {
             server.start();
             server.join();
         } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
+            ex.printStackTrace();
         }
     }
 }
