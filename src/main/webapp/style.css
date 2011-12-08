@@ -1,6 +1,6 @@
 div #pan {
     border: #dddddd 1px solid;
-    width: 512px;
-    height: 512px;
+    width: 640px;
+    height: 480px;
     overflow: hidden;
 }
