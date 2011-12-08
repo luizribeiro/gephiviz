@@ -1,7 +1,14 @@
+html, body {
+    height: 100%;
+    margin: 0px;
+}
+
 div#pan {
-    border: #dddddd 1px solid;
-    width: 640px;
-    height: 480px;
+    border: 0px;
+    width: 100%;
+    min-height: 100%;
+    height: auto !important;
+    height: 100%; /*for IE*/
     overflow: hidden;
 }
 
