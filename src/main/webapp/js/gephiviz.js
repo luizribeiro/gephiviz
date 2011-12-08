@@ -6,7 +6,8 @@ $(document).ready(function() {
         'panDown'   :  $('#pandown'),
         'panLeft'   :  $('#panleft'),
         'panRight'  :  $('#panright'),
-        'fit'       :  $('#fit')
+        'fit'       :  $('#fit'),
+        'debug'     :  false
     });
     $('#pan img').fit();
 });
