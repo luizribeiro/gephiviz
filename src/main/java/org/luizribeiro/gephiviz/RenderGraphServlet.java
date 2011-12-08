@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -75,6 +76,20 @@ class MultiqueryResults {
 }
 
 public class RenderGraphServlet extends HttpServlet {
+
+    protected int outputWidth;
+    protected int outputHeight;
+
+    @Override
+    public void init(ServletConfig sc) throws ServletException {
+        try {
+            outputWidth = Integer.parseInt(sc.getInitParameter("output_width"));
+            outputHeight = Integer.parseInt(sc.getInitParameter("output_height"));
+        } catch (Exception ex) {
+            outputWidth = 2048;
+            outputHeight = 2048;
+        }
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -176,8 +191,8 @@ public class RenderGraphServlet extends HttpServlet {
 
             // export to PNG
             PNGExporter pngExporter = (PNGExporter) exportController.getExporter("png");
-            pngExporter.setWidth(2048);
-            pngExporter.setHeight(2048);
+            pngExporter.setWidth(outputWidth);
+            pngExporter.setHeight(outputHeight);
             exportController.exportStream(output, pngExporter);
         } catch (FacebookOAuthException ex) {
             request.getSession().invalidate();
