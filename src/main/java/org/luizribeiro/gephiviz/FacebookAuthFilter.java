@@ -52,8 +52,13 @@ public class FacebookAuthFilter implements Filter {
     }
 
     public void init(FilterConfig fc) throws ServletException {
-        apiKey = fc.getInitParameter("api_key");
-        appSecret = fc.getInitParameter("app_secret");
+        apiKey = System.getenv("GEPHIVIZ_API_KEY");
+        appSecret = System.getenv("GEPHIVIZ_APP_SECRET");
+
+        if (apiKey == null)
+            apiKey = fc.getInitParameter("api_key");
+        if (appSecret == null)
+            appSecret = fc.getInitParameter("app_secret");
     }
 
     public void destroy() {
