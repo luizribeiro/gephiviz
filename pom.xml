@@ -60,13 +60,15 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals><goal>assemble</goal></goals>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
                         <configuration>
                             <assembleDirectory>target</assembleDirectory>
                             <programs>
                                 <program>
                                     <mainClass>org.luizribeiro.gephiviz.Main</mainClass>
-                                    <name>gephiviz</name>
+                                    <name>webapp</name>
                                 </program>
                             </programs>
                         </configuration>
