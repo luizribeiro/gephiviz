@@ -9,6 +9,14 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
+    <repositories>
+        <repository>
+            <id>project.local</id>
+            <name>project</name>
+            <url>file:${project.basedir}/repo</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -37,8 +45,6 @@
             <groupId>org.gephi</groupId>
             <artifactId>toolkit</artifactId>
             <version>0.8.2497</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/gephi-toolkit-0.8.2497.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -78,6 +84,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
