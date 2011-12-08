@@ -22,11 +22,11 @@
         <servlet-class>org.luizribeiro.gephiviz.RenderGraphServlet</servlet-class>
         <init-param>
             <param-name>output_width</param-name>
-            <param-value>4096</param-value>
+            <param-value>3072</param-value>
         </init-param>
         <init-param>
             <param-name>output_height</param-name>
-            <param-value>4096</param-value>
+            <param-value>3072</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
