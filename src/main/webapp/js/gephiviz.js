@@ -4,6 +4,7 @@ $(document).ready(function() {
     $('#pan img').load(function() {
         $('#pan #loading').hide();
         $(this).fadeIn();
+        
     });
 
     $('#pan img').panZoom({
@@ -16,4 +17,6 @@ $(document).ready(function() {
         'fit'       :  $('#fit'),
         'debug'     :  false
     });
+
+    $('#pan img').panZoom('fit');
 });
