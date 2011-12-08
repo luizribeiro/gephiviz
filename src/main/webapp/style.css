@@ -12,8 +12,6 @@ div#pan {
     overflow: hidden;
 }
 
-div#loading {
-    width: 100%;
-    height: 100%;
+.loading {
     background: url(/img/spinner.gif) no-repeat center center;
 }

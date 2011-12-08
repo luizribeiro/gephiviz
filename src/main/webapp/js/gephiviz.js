@@ -2,10 +2,12 @@ $(document).ready(function() {
     $('#pan img').hide();
 
     $('#pan img').load(function() {
-        $('#pan #loading').hide();
-        $(this).fadeIn();
-        $('#pan img').panZoom('fit');
+        $('#pan').removeClass('loading');
+        $(this).fadeIn('slow');
+        $(this).panZoom('fit');
     });
+
+    $('#pan').addClass('loading');
 
     $('#pan img').panZoom({
         'zoomIn'    :  $('#zoomin'),
