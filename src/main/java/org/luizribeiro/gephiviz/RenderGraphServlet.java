@@ -6,6 +6,7 @@ import com.restfb.FacebookClient;
 import com.restfb.exception.FacebookOAuthException;
 import com.restfb.types.User;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.server.HttpConnection.OutputWriter;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -23,6 +25,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.preview.PNGExporter;
+import org.gephi.io.exporter.preview.SVGExporter;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
@@ -93,7 +96,7 @@ public class RenderGraphServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("image/png");
+        response.setContentType("image/svg+xml");
 
         // get the output stream
         ServletOutputStream output = response.getOutputStream();
@@ -187,13 +190,13 @@ public class RenderGraphServlet extends HttpServlet {
 
             // setup preview
             previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-            previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
+            previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(1f));
 
-            // export to PNG
-            PNGExporter pngExporter = (PNGExporter) exportController.getExporter("png");
-            pngExporter.setWidth(outputWidth);
-            pngExporter.setHeight(outputHeight);
-            exportController.exportStream(output, pngExporter);
+            // export to SVG
+            SVGExporter svgExporter = (SVGExporter) exportController.getExporter("svg");
+            svgExporter.setWorkspace(workspace);
+            svgExporter.setWriter(new OutputStreamWriter(output));
+            svgExporter.execute();
         } catch (FacebookOAuthException ex) {
             request.getSession().invalidate();
             response.sendRedirect(request.getRequestURL().toString());

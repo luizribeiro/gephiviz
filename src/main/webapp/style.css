@@ -4,15 +4,6 @@ html, body {
     overflow: hidden;
 }
 
-div#pan {
-    border: 0px;
-    width: 100%;
-    min-height: 100%;
-    height: auto !important;
-    height: 100%; /*for IE*/
-    overflow: hidden;
-}
-
 .loading {
     background: url(/img/spinner.gif) no-repeat center center;
 }
