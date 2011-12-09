@@ -96,7 +96,8 @@ public class RenderGraphServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("image/svg+xml");
+        response.setContentType("image/svg+xml; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
         // get the output stream
         ServletOutputStream output = response.getOutputStream();
