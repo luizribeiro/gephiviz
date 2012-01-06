@@ -1,14 +1,14 @@
-var paper;
-var zpd;
+var canvas;
+var ctx;
 
 $(document).ready(function() {
-    paper = Raphael(0, 0, document.width, document.height);
-    zpd = RaphaelZPD(paper, { zoom: true, pan: true, drag: false });
+    canvas = document.getElementById('drawing-canvas');
+    ctx = canvas.getContext('webgl-2d');
 
-    renderGraph();
+    loadGraph();
 });
 
-function renderGraph() {
+function loadGraph() {
     $('body').addClass('loading');
 
     $.ajax({
@@ -16,7 +16,7 @@ function renderGraph() {
         url: '/render',
         dataType: 'xml',
         success: function(data) {
-            paper.importSVG(data);
+            canvg(canvas, data);
             $('body').removeClass('loading');
         }
     });
