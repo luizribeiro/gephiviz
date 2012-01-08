@@ -3,7 +3,6 @@ package org.luizribeiro.gephiviz;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.Facebook;
 import com.restfb.FacebookClient;
-import com.restfb.exception.FacebookOAuthException;
 import com.restfb.types.User;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -16,7 +15,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.server.HttpConnection.OutputWriter;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -24,7 +22,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.api.ExportController;
-import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.io.exporter.preview.SVGExporter;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.plugin.force.StepDisplacement;
@@ -43,8 +40,8 @@ import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.gephi.statistics.plugin.Modularity;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.scribe.model.Token;
 
 class Friend {
 
@@ -108,7 +105,7 @@ public class RenderGraphServlet extends HttpServlet {
 
         try {
             // setup facebook client
-            String accessToken = ((Token) request.getSession().getAttribute(FacebookAuthFilter.FB_ACCESS_TOKEN)).getToken();
+            String accessToken = FacebookAuth.getAccessToken(request);
             FacebookClient client = new DefaultFacebookClient(accessToken);
 
             // get Gephi's workspace
@@ -198,9 +195,9 @@ public class RenderGraphServlet extends HttpServlet {
             svgExporter.setWorkspace(workspace);
             svgExporter.setWriter(new OutputStreamWriter(output));
             svgExporter.execute();
-        } catch (FacebookOAuthException ex) {
-            request.getSession().invalidate();
-            response.sendRedirect(request.getRequestURL().toString());
+        } catch (Exception ex) {
+            // FacebookAuth error
+            Exceptions.printStackTrace(ex);
         } finally {
             output.close();
             projectController.closeCurrentProject();
