@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var viewer = new Seadragon.Viewer("viewport");
-    viewer.openDzi("map/map.xml");
+    viewer.openDzi("/tile/666415875/map.xml");
 });
 
 function renderGraph() {

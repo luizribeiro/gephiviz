@@ -45,4 +45,8 @@ public class RenderStorage {
         // upload object
         s3Service.putObject(s3Bucket, s3Object);
     }
+
+    public S3Object retrieveS3Object(String filename) throws S3ServiceException {
+        return s3Service.getObject(s3Bucket, filename);
+    }
 }

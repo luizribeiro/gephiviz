@@ -4,17 +4,18 @@
     <servlet>
         <servlet-name>RenderGraphServlet</servlet-name>
         <servlet-class>org.luizribeiro.gephiviz.RenderGraphServlet</servlet-class>
-        <init-param>
-            <param-name>output_width</param-name>
-            <param-value>3072</param-value>
-        </init-param>
-        <init-param>
-            <param-name>output_height</param-name>
-            <param-value>3072</param-value>
-        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>RenderGraphServlet</servlet-name>
         <url-pattern>/render</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TileProxyServlet</servlet-name>
+        <servlet-class>org.luizribeiro.gephiviz.TileProxyServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TileProxyServlet</servlet-name>
+        <url-pattern>/tile/*</url-pattern>
     </servlet-mapping>
 </web-app>
