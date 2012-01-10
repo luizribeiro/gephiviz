@@ -1,11 +1,6 @@
-var paper;
-var zpd;
-
 $(document).ready(function() {
-    paper = Raphael(0, 0, document.width, document.height);
-    zpd = RaphaelZPD(paper, { zoom: true, pan: true, drag: false });
-
-    renderGraph();
+    var viewer = new Seadragon.Viewer("viewport");
+    viewer.openDzi("map/map.xml");
 });
 
 function renderGraph() {
@@ -16,7 +11,7 @@ function renderGraph() {
         url: '/render',
         dataType: 'xml',
         success: function(data) {
-            paper.importSVG(data);
+            // render stuff
             $('body').removeClass('loading');
         }
     });
