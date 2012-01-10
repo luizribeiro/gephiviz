@@ -1,7 +1,7 @@
 package org.luizribeiro.gephiviz;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.webapp.WebAppContext;
 
 public class Main {
 
