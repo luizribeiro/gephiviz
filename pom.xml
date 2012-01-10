@@ -36,9 +36,9 @@
             <version>1.6.9</version>
         </dependency>
         <dependency>
-            <groupId>org.scribe</groupId>
-            <artifactId>scribe</artifactId>
-            <version>1.2.3</version>
+            <groupId>net.java.dev.jets3t</groupId>
+            <artifactId>jets3t</artifactId>
+            <version>0.8.1</version>
         </dependency>
 
         <dependency>

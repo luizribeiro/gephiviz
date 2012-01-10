@@ -50,8 +50,8 @@ public class FacebookAuth {
     }
 
     private static String base64UrlDecode(String input) {
-        Base64 decoder = new Base64(true);
-        byte decodedBytes[] = decoder.decode(input);
+        Base64 decoder = new Base64();
+        byte decodedBytes[] = decoder.decode(input.getBytes());
         return new String(decodedBytes);
     }
 

@@ -4,6 +4,7 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.Facebook;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.api.ExportController;
+import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.io.exporter.preview.SVGExporter;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.plugin.force.StepDisplacement;
@@ -93,9 +95,6 @@ public class RenderGraphServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("image/svg+xml; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
         // get the output stream
         ServletOutputStream output = response.getOutputStream();
 
@@ -104,6 +103,9 @@ public class RenderGraphServlet extends HttpServlet {
         projectController.newProject();
 
         try {
+            // setup render storage connection
+            RenderStorage renderStorage = new RenderStorage();
+
             // setup facebook client
             String accessToken = FacebookAuth.getAccessToken(request);
             FacebookClient client = new DefaultFacebookClient(accessToken);
@@ -191,12 +193,18 @@ public class RenderGraphServlet extends HttpServlet {
             previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(1f));
 
             // export to SVG
-            SVGExporter svgExporter = (SVGExporter) exportController.getExporter("svg");
-            svgExporter.setWorkspace(workspace);
-            svgExporter.setWriter(new OutputStreamWriter(output));
-            svgExporter.execute();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            PNGExporter pngExporter = (PNGExporter) exportController.getExporter("png");
+            pngExporter.setWidth(512);
+            pngExporter.setHeight(512);
+            exportController.exportStream(os, pngExporter);
+
+            // upload to the render storage
+            renderStorage.storeRenderedTile(os.toByteArray(), user.getId());
+
+            output.print("OK");
         } catch (Exception ex) {
-            // FacebookAuth error
+            output.print("FAIL");
             Exceptions.printStackTrace(ex);
         } finally {
             output.close();
@@ -205,8 +213,10 @@ public class RenderGraphServlet extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
+    /**
+     * Handles the HTTP
+     * <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -218,8 +228,10 @@ public class RenderGraphServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
+    /**
+     * Handles the HTTP
+     * <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -231,8 +243,9 @@ public class RenderGraphServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
