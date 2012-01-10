@@ -6,7 +6,6 @@ import com.restfb.FacebookClient;
 import com.restfb.types.User;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.preview.PNGExporter;
-import org.gephi.io.exporter.preview.SVGExporter;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
@@ -192,7 +190,7 @@ public class RenderGraphServlet extends HttpServlet {
             previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
             previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(1f));
 
-            // export to SVG
+            // export to PNG
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PNGExporter pngExporter = (PNGExporter) exportController.getExporter("png");
             pngExporter.setWidth(512);
@@ -201,7 +199,7 @@ public class RenderGraphServlet extends HttpServlet {
 
             // upload to the render storage
             renderStorage.storeRenderedTile(os.toByteArray(), user.getId());
-
+            
             output.print("OK");
         } catch (Exception ex) {
             output.print("FAIL");
