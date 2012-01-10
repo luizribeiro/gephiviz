@@ -22,6 +22,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.luizribeiro.gephiviz.RenderStorage;
 import org.openide.util.Lookup;
 import org.w3c.dom.Element;
 import processing.core.PGraphicsJava2D;
@@ -42,11 +43,12 @@ public class SeadragonExporter implements Exporter, LongTask {
     private boolean cancel = false;
     private PNGExporter pngExporter = new PNGExporter();
     private TileRenderer tileRenderer;
+    private RenderStorage renderStorage;
+    private String pathPrefix;
     //Settings
     private int width;
     private int height;
     private int margin;
-    private File path;
     private int overlap = 1;
     private int tileSize = 256;
 
@@ -89,12 +91,6 @@ public class SeadragonExporter implements Exporter, LongTask {
     }
 
     public void export(BufferedImage img) throws Exception {
-        delete(new File(path, PATH_MAP));
-        File folder = new File(path, PATH_MAP);
-        folder.mkdir();
-        folder = new File(folder, PATH_MAP + PATH_FILES);
-        folder.mkdir();
-
         int numLevels = (int) Math.ceil(Math.log(Math.max(img.getWidth(), img.getHeight())) / Math.log(2.));
         int w = img.getWidth();
         int h = img.getHeight();
@@ -109,11 +105,9 @@ public class SeadragonExporter implements Exporter, LongTask {
         Progress.switchToDeterminate(progress, tasks);
 
         //Tile renderer
-        tileRenderer = new TileRenderer(folder, tileSize, overlap);
+        tileRenderer = new TileRenderer(pathPrefix + "/" + PATH_MAP + PATH_FILES, renderStorage, tileSize, overlap);
         tileRenderer.setProgressTicket(progress);
         for (int level = numLevels; level >= 0 && !cancel; level--) {
-            File levelFolder = new File(folder, "" + (level));
-            levelFolder.mkdir();
             float levelScale = 1f / (1 << (numLevels - level));
             tileRenderer.writeLevel(img, levelScale, level);
         }
@@ -122,7 +116,6 @@ public class SeadragonExporter implements Exporter, LongTask {
     }
 
     public void createXML() {
-        File file = new File(path + File.separator + PATH_MAP + File.separator + XML_FILE);
         org.w3c.dom.Document document = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -149,11 +142,13 @@ public class SeadragonExporter implements Exporter, LongTask {
 
         try {
             Source source = new DOMSource(document);
-            Result result = new StreamResult(file);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            Result result = new StreamResult(os);
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.transform(source, result);
+            renderStorage.storeByteArray(os.toByteArray(), pathPrefix + "/" + XML_FILE, "text/xml");
         } catch (Exception ex) {
             throw new RuntimeException("Can't write XML file", ex);
         }
@@ -225,14 +220,6 @@ public class SeadragonExporter implements Exporter, LongTask {
         this.width = width;
     }
 
-    public File getPath() {
-        return path;
-    }
-
-    public void setPath(File path) {
-        this.path = path;
-    }
-
     @Override
     public boolean cancel() {
         this.cancel = true;
@@ -257,5 +244,21 @@ public class SeadragonExporter implements Exporter, LongTask {
         if (f.exists() && !f.delete()) {
             throw new IOException("Failed to delete file: " + f);
         }
+    }
+
+    public void setPathPrefix(String pathPrefix) {
+        this.pathPrefix = pathPrefix;
+    }
+
+    public String getPathPrefix() {
+        return pathPrefix;
+    }
+
+    public RenderStorage getRenderStorage() {
+        return renderStorage;
+    }
+
+    public void setRenderStorage(RenderStorage renderStorage) {
+        this.renderStorage = renderStorage;
     }
 }

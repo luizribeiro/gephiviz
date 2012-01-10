@@ -40,6 +40,7 @@ import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.gephi.statistics.plugin.Modularity;
+import org.luizribeiro.gephiviz.exporter.SeadragonExporter;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -190,16 +191,17 @@ public class RenderGraphServlet extends HttpServlet {
             previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
             previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(1f));
 
-            // export to PNG
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            PNGExporter pngExporter = (PNGExporter) exportController.getExporter("png");
-            pngExporter.setWidth(512);
-            pngExporter.setHeight(512);
-            exportController.exportStream(os, pngExporter);
+            // export to Seadragon on the render storage
+            SeadragonExporter exporter = new SeadragonExporter();
+            exporter.setRenderStorage(renderStorage);
+            exporter.setPathPrefix(user.getId());
+            exporter.setWorkspace(workspace);
+            exporter.setTileSize(256);
+            exporter.setWidth(4096);
+            exporter.setHeight(4096);
+            exporter.setMargin(20);
+            exporter.execute();
 
-            // upload to the render storage
-            renderStorage.storeRenderedTile(os.toByteArray(), user.getId());
-            
             output.print("OK");
         } catch (Exception ex) {
             output.print("FAIL");

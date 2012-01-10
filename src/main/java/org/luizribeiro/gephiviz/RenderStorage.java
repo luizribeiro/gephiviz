@@ -1,7 +1,10 @@
 package org.luizribeiro.gephiviz;
 
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.acl.AccessControlList;
@@ -22,11 +25,18 @@ public class RenderStorage {
         s3Bucket = s3Service.getOrCreateBucket("gephiviz-" + Settings.getApiKey());
     }
 
-    public void storeRenderedTile(byte buffer[], String uid)
+    public void storeImage(RenderedImage image, String filename)
             throws IOException, S3ServiceException {
-        S3Object s3Object = new S3Object(uid + ".png");
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", os);
+        storeByteArray(os.toByteArray(), filename, "image/png");
+    }
+
+    public void storeByteArray(byte buffer[], String filename, String contentType)
+            throws IOException, S3ServiceException {
+        S3Object s3Object = new S3Object(filename);
         s3Object.setDataInputStream(new ByteArrayInputStream(buffer));
-        s3Object.setContentType("image/png");
+        s3Object.setContentType(contentType);
         s3Object.setContentLength(buffer.length);
 
         // make this object public

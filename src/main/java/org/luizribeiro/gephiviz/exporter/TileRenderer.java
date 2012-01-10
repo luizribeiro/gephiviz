@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.imgscalr.Scalr;
+import org.luizribeiro.gephiviz.RenderStorage;
 
 /**
  *
@@ -23,17 +24,19 @@ import org.imgscalr.Scalr;
  */
 public class TileRenderer {
 
-    private final File folder;
+    private final String pathPrefix;
+    private final RenderStorage renderStorage;
     private final int tileSize;
     private final String fileFormat = "png";
     private final int overlap;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
-    public TileRenderer(File folder, int tileSize, int tileOverlap) {
+    public TileRenderer(String pathPrefix, RenderStorage renderStorage, int tileSize, int tileOverlap) {
         this.tileSize = tileSize;
         this.overlap = tileOverlap;
-        this.folder = folder;
+        this.pathPrefix = pathPrefix;
+        this.renderStorage = renderStorage;
     }
 
     public void writeLevel(BufferedImage image, float scale, int level) {
@@ -47,11 +50,6 @@ public class TileRenderer {
 
     public void writeLevel(BufferedImage image, int level) {
         try {
-            File levelFolder = new File(folder, "" + level);
-            if (!levelFolder.exists()) {
-                levelFolder.mkdir();
-            }
-
             int width = image.getWidth();
             int height = image.getHeight();
             int cols = (int) Math.ceil(width / tileSize);
@@ -70,8 +68,7 @@ public class TileRenderer {
                         BufferedImage bufferedImage = ((BufferedImage) image);
                         tiledImage = bufferedImage.getSubimage(left, top, tileW, tileH);
 
-                        File file = new File(levelFolder, c + "_" + r + "." + fileFormat);
-                        write(tiledImage, file);
+                        renderStorage.storeImage(tiledImage, pathPrefix + "/" + level + "/" + c + "_" + r + ".png");
                         if (cancel) {
                             return;
                         }
@@ -81,24 +78,6 @@ public class TileRenderer {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public void write(RenderedImage image, File file) {
-        if (fileFormat.equalsIgnoreCase("png")) {
-            try {
-                ImageIO.write(image, fileFormat, file);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else if (fileFormat.equalsIgnoreCase("gif")) {
-            try {
-                ImageIO.write(image, fileFormat, file);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else {
-            throw new RuntimeException("Format " + fileFormat + " not supported");
         }
     }
 
