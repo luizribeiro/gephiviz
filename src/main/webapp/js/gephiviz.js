@@ -3,9 +3,7 @@ $(document).ready(function() {
 
     // remove full page button from the seadragon viewer
     var navControl = viewer.getNavControl();
-    while (navControl.firstChild !== navControl.lastChild) {
-        navControl.removeChild(navControl.firstChild);
-    }
+    navControl.removeChild(navControl.lastChild);
 
     viewer.openDzi("/tile/666415875/map.xml");
 });
