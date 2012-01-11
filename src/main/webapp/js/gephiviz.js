@@ -23,9 +23,8 @@ function renderGraph() {
         dataType: 'text',
         success: function(data) {
             // render stuff
-            $('body').removeClass('loading');
-            alert(data);
             viewer.openDzi('/tile/666415875/map.xml');
+            $('body').removeClass('loading');
             $('#viewport').show();
         }
     });
