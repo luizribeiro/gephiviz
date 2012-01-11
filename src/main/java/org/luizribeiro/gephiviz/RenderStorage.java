@@ -39,9 +39,6 @@ public class RenderStorage {
         s3Object.setContentType(contentType);
         s3Object.setContentLength(buffer.length);
 
-        // make this object public
-        s3Object.setAcl(AccessControlList.REST_CANNED_PUBLIC_READ);
-
         // upload object
         s3Service.putObject(s3Bucket, s3Object);
     }
