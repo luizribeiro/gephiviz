@@ -4,7 +4,6 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.Facebook;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.api.ExportController;
-import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
@@ -101,6 +99,9 @@ public class RenderGraphServlet extends HttpServlet {
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.newProject();
 
+        output.println("Starting...");
+        output.flush();
+
         try {
             // setup render storage connection
             RenderStorage renderStorage = new RenderStorage();
@@ -122,9 +123,13 @@ public class RenderGraphServlet extends HttpServlet {
             ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
 
             // grab user information
+            output.println("Fetching user information...");
+            output.flush();
             User user = client.fetchObject("me", User.class);
 
             // run FQL multiquery and prepare data
+            output.println("Fetching social graph...");
+            output.flush();
             Map<String, String> queries = new HashMap<String, String>();
             queries.put("friends", "SELECT uid2 FROM friend WHERE uid1=" + user.getId());
             queries.put("mutualfriends", "SELECT uid1, uid2 FROM friend WHERE uid1 IN (SELECT uid2 FROM #friends) AND uid2 IN (SELECT uid2 FROM #friends)");
@@ -133,6 +138,8 @@ public class RenderGraphServlet extends HttpServlet {
 
             // build graph from multiquery results
             // create nodes
+            output.println("Building graph representation...");
+            output.flush();
             Map<String, Node> nodes = new HashMap<String, Node>();
             for (Friend friend : multiqueryResults.friends) {
                 Node newNode = graphModel.factory().newNode();
@@ -192,6 +199,8 @@ public class RenderGraphServlet extends HttpServlet {
             previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(1f));
 
             // export to Seadragon on the render storage
+            output.println("Rendering social graph...");
+            output.flush();
             SeadragonExporter exporter = new SeadragonExporter();
             exporter.setRenderStorage(renderStorage);
             exporter.setPathPrefix(user.getId());
@@ -202,9 +211,9 @@ public class RenderGraphServlet extends HttpServlet {
             exporter.setMargin(20);
             exporter.execute();
 
-            output.print("OK");
+            output.println("OK");
         } catch (Exception ex) {
-            output.print("FAIL");
+            output.println("FAIL");
             Exceptions.printStackTrace(ex);
         } finally {
             output.close();
