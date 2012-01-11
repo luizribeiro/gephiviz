@@ -25,7 +25,7 @@ function renderGraph() {
             // render stuff
             if (data.indexOf("OK") != -1) {
                 FB.api('/me', function(response) {
-                    viewer.openDzi('/tile/' + response.id + 'map.xml');
+                    viewer.openDzi('/tile/' + response.id + '/map.xml');
                 });
                 $('body').removeClass('loading');
                 $('#viewport').show();
