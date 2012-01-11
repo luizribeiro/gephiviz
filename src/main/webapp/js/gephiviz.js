@@ -1,14 +1,20 @@
+var viewer;
+
 $(document).ready(function() {
-    var viewer = new Seadragon.Viewer("viewport");
+    setupViewer();
+    renderGraph();
+});
+
+function setupViewer() {
+    viewer = new Seadragon.Viewer("viewport");
 
     // remove full page button from the seadragon viewer
     var navControl = viewer.getNavControl();
     navControl.removeChild(navControl.lastChild);
-
-    viewer.openDzi("/tile/666415875/map.xml");
-});
+}
 
 function renderGraph() {
+    $('#viewport').hide();
     $('body').addClass('loading');
 
     $.ajax({
@@ -18,6 +24,8 @@ function renderGraph() {
         success: function(data) {
             // render stuff
             $('body').removeClass('loading');
+            $('#viewport').show();
+            viewer.openDzi("/tile/666415875/map.xml");
         }
     });
 }
