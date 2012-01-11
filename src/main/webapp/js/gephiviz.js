@@ -23,9 +23,13 @@ function renderGraph() {
         dataType: 'text',
         success: function(data) {
             // render stuff
-            viewer.openDzi('/tile/666415875/map.xml');
-            $('body').removeClass('loading');
-            $('#viewport').show();
+            if (data.indexOf("OK") != -1) {
+                FB.api('/me', function(response) {
+                    viewer.openDzi('/tile/' + response.id + 'map.xml');
+                });
+                $('body').removeClass('loading');
+                $('#viewport').show();
+            }
         }
     });
 }
