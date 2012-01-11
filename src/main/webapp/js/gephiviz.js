@@ -20,12 +20,13 @@ function renderGraph() {
     $.ajax({
         type: 'GET',
         url: '/render',
-        dataType: 'xml',
+        dataType: 'text',
         success: function(data) {
             // render stuff
             $('body').removeClass('loading');
+            alert(data);
+            viewer.openDzi('/tile/666415875/map.xml');
             $('#viewport').show();
-            viewer.openDzi("/tile/666415875/map.xml");
         }
     });
 }
