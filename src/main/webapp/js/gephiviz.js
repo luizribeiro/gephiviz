@@ -1,14 +1,29 @@
 var viewer;
+var uid;
 
 $(document).ready(function() {
     $('#viewport').hide();
     $('body').addClass('loading');
+
+    setupFacebook();
+    setupViewer();
 });
 
-function init() {
-    setupViewer();
-    renderGraph();
-}
+window.fbAsyncInit = function() {
+    FB.init({
+        appId  : GEPHIVIZ_APP_ID,
+        status : true,
+        cookie : true,
+        xfbml  : true
+    });
+
+    FB.Event.subscribe('auth.statusChange', function(response) {
+        if (response.status == 'connected') {
+            uid = response.authResponse.userID;
+            renderGraph();
+        }
+    });
+};
 
 function setupViewer() {
     viewer = new Seadragon.Viewer("viewport");
@@ -18,6 +33,11 @@ function setupViewer() {
     navControl.removeChild(navControl.lastChild);
 }
 
+function setupFacebook() {
+    $('body').append('<div id="fb-root"></div>');
+    $.getScript(document.location.protocol + '//connect.facebook.net/en_US/all.js');
+}
+
 function renderGraph() {
     $.ajax({
         type: 'GET',
@@ -25,11 +45,9 @@ function renderGraph() {
         dataType: 'text',
         success: function(data) {
             if (data.indexOf("OK") != -1) {
-                FB.api('/me', function(response) {
-                    viewer.openDzi('/tile/' + response.id + '/map.xml');
-                    $('body').removeClass('loading');
-                    $('#viewport').show();
-                });
+                viewer.openDzi('/tile/' + uid + '/map.xml');
+                $('body').removeClass('loading');
+                $('#viewport').show();
             }
         }
     });
