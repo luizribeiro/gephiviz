@@ -19,6 +19,9 @@ window.fbAsyncInit = function() {
 
     FB.Event.subscribe('auth.statusChange', function(response) {
         if (response.status == 'connected') {
+            if ($.cookie('fbsr_' + GEPHIVIZ_APP_ID) == null) {
+                window.location.reload();
+            }
             uid = response.authResponse.userID;
             renderGraph();
         }
