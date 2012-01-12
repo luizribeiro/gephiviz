@@ -22,6 +22,7 @@
               cookie     : true,
               xfbml      : true
             });
+			init();
           };
           (function(d){
              var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}

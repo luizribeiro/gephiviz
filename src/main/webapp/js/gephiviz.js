@@ -1,9 +1,14 @@
 var viewer;
 
 $(document).ready(function() {
+    $('#viewport').hide();
+    $('body').addClass('loading');
+});
+
+function init() {
     setupViewer();
     renderGraph();
-});
+}
 
 function setupViewer() {
     viewer = new Seadragon.Viewer("viewport");
@@ -14,21 +19,17 @@ function setupViewer() {
 }
 
 function renderGraph() {
-    $('#viewport').hide();
-    $('body').addClass('loading');
-
     $.ajax({
         type: 'GET',
         url: '/render',
         dataType: 'text',
         success: function(data) {
-            // render stuff
             if (data.indexOf("OK") != -1) {
                 FB.api('/me', function(response) {
                     viewer.openDzi('/tile/' + response.id + '/map.xml');
+                    $('body').removeClass('loading');
+                    $('#viewport').show();
                 });
-                $('body').removeClass('loading');
-                $('#viewport').show();
             }
         }
     });
