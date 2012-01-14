@@ -205,7 +205,7 @@ public class RenderGraphServlet extends HttpServlet {
             exporter.setRenderStorage(renderStorage);
             exporter.setPathPrefix(user.getId());
             exporter.setWorkspace(workspace);
-            exporter.setTileSize(256);
+            exporter.setTileSize(512);
             exporter.setWidth(4096);
             exporter.setHeight(4096);
             exporter.setMargin(20);
