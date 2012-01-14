@@ -17,13 +17,20 @@ window.fbAsyncInit = function() {
         xfbml  : true
     });
 
-    FB.Event.subscribe('auth.statusChange', function(response) {
+    FB.Event.subscribe('auth.authResponseChange', function(response) {
         if (response.status == 'connected') {
             if ($.cookie('fbsr_' + GEPHIVIZ_APP_ID) == null) {
                 window.location.reload();
             }
-            uid = response.authResponse.userID;
-            renderGraph();
+        }
+    });
+
+    FB.getLoginStatus(function(response) {
+        if (response.status == 'connected') {
+            if ($.cookie('fbsr_' + GEPHIVIZ_APP_ID) != null) {
+                uid = response.authResponse.userID;
+                renderGraph();
+            }
         }
     });
 };
