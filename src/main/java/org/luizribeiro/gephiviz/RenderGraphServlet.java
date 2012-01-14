@@ -127,6 +127,13 @@ public class RenderGraphServlet extends HttpServlet {
             output.flush();
             User user = client.fetchObject("me", User.class);
 
+            // check if already rendered
+            if (renderStorage.hasObject(user.getId() + "/map.xml")) {
+                output.println("Loading cached data...");
+                output.println("OK");
+                return;
+            }
+
             // run FQL multiquery and prepare data
             output.println("Fetching social graph...");
             output.flush();
