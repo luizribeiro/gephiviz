@@ -3,6 +3,7 @@ var uid;
 
 $(document).ready(function() {
     $('#viewport').hide();
+    $('#content').hide();
     $('body').addClass('loading');
 
     setupFacebook();
@@ -17,23 +18,23 @@ window.fbAsyncInit = function() {
         xfbml  : true
     });
 
-    FB.Event.subscribe('auth.authResponseChange', function(response) {
-        if (response.status == 'connected') {
-            if ($.cookie('fbsr_' + GEPHIVIZ_APP_ID) == null) {
-                window.location.reload();
-            }
-        }
-    });
-
-    FB.getLoginStatus(function(response) {
-        if (response.status == 'connected') {
-            if ($.cookie('fbsr_' + GEPHIVIZ_APP_ID) != null) {
-                uid = response.authResponse.userID;
-                renderGraph();
-            }
-        }
-    });
+    FB.Event.subscribe('auth.authResponseChange', checkLoginStatus);
+    FB.getLoginStatus(checkLoginStatus);
 };
+
+function checkLoginStatus(response) {
+    if (response.status == 'connected') {
+        if ($.cookie('fbsr_' + GEPHIVIZ_APP_ID) == null) {
+            window.location.reload();
+        } else {
+            uid = response.authResponse.userID;
+            renderGraph();
+        }
+    } else if (response.status == 'not_authorized') {
+        $('#content').load('/welcome.jsp', showContent);
+    } else {
+    }
+}
 
 function setupViewer() {
     viewer = new Seadragon.Viewer("viewport");
@@ -60,5 +61,17 @@ function renderGraph() {
                 $('#viewport').show();
             }
         }
+    });
+}
+
+$(window).resize(function() {
+    $("#content").css('top', ($(window).height() - $("#content").height()) / 2);
+    $("#content").css('left', ($(window).width() - $("#content").width()) / 2);
+});
+
+function showContent() {
+    $(window).resize();
+    $('#content').fadeIn(function() {
+        $('body').removeClass('loading');
     });
 }
