@@ -62,3 +62,7 @@ p {
     height: 400px;
     z-index: 1000;
 }
+
+.fb-like {
+    padding: 5px;
+}
