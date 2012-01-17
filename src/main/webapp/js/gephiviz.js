@@ -70,6 +70,7 @@ $(window).resize(function() {
 });
 
 function showContent() {
+    FB.XFBML.parse(document.getElementById('content'));
     $(window).resize();
     $('#content').fadeIn(function() {
         $('body').removeClass('loading');
